@@ -1,4 +1,4 @@
-require "active_support/core_ext/hash/slice"
+#require "active_support/core_ext/hash/slice"
 
 module DeviseLoginCookie
 
@@ -6,7 +6,6 @@ module DeviseLoginCookie
 
     # for non-Rails test environment.
     attr_writer :session_options
-    attr_accessor :secret_token
 
     def initialize(cookies, scope)
       @cookies = cookies
@@ -15,7 +14,7 @@ module DeviseLoginCookie
 
     # Sets the cookie, referencing the given resource.id (e.g. User)
     def set(resource)
-      @cookies[cookie_name] = cookie_options.merge(:value => encoded_value(resource))
+      @cookies.signed[cookie_name] = {value: [resource.id, Time.now.to_i]}.merge(cookie_options)
     end
 
     # Unsets the cookie via the HTTP response.
@@ -35,11 +34,7 @@ module DeviseLoginCookie
 
     # Whether the cookie appears valid.
     def valid?
-      present? && value.all?
-    end
-
-    def present?
-      @cookies[cookie_name].present?
+      value
     end
 
     # Whether the cookie was set since the given Time
@@ -47,34 +42,26 @@ module DeviseLoginCookie
       created_at && created_at >= time
     end
 
-    private
+    def self.cookie_name(scope)
+      :"#{scope}_token"
+    end
+
+  private
 
     def value
-      begin
-        @value = signer.decode @cookies[cookie_name]
-      rescue SignedJson::Error
-        [nil, nil]
-      end
+      @cookies.signed[cookie_name]
     end
 
     def cookie_name
-      :"login_#{@scope}_token"
+      self.class.cookie_name(@scope)
     end
 
-    def encoded_value(resource)
-      signer.encode [ resource.id, Time.now.to_i ]
-    end
 
     def cookie_options
       @session_options ||= Rails.configuration.session_options
       @session_options.slice(:path, :domain, :secure, :httponly)
     end
 
-    def signer
-      require 'signed_json'
-      secret = secret_token || Rails.configuration.secret_token
-      @signer ||= SignedJson::Signer.new(secret)
-    end
 
   end
 
