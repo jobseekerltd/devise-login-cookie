@@ -21,7 +21,7 @@ describe 'login cookie' do
     assert_logged_in
     delete_cookie('user_token')
     visit '/'
-    page.should have_content "You need to sign in or sign up before continuing"
+    assert_login_path
   end
 
   it 'allows user to log in with across multiple subdomains' do
