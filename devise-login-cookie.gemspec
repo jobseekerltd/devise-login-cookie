@@ -19,13 +19,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency("signed_json", ["~> 0.0.3"])
   s.add_dependency("devise", ["~> 2"])
 
   s.add_development_dependency("rspec", ["~> 2.2"])
   s.add_development_dependency("activesupport", ["~> 3.2.0"]) # devise requires this
   s.add_development_dependency("rails", ["~> 3.2.0"]) # devise requires this
-  s.add_development_dependency("rake")
   s.add_development_dependency("capybara")
   s.add_development_dependency("capybara-webkit")
   s.add_development_dependency "bundler", "~> 1.3"
