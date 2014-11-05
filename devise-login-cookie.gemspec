@@ -22,8 +22,8 @@ Gem::Specification.new do |s|
   s.add_dependency("devise", ["~> 2"])
 
   s.add_development_dependency("rspec", ["~> 2.2"])
-  s.add_development_dependency("activesupport", ["~> 3.2.0"]) # devise requires this
-  s.add_development_dependency("rails", ["~> 3.2.0"]) # devise requires this
+  s.add_development_dependency("activesupport") # devise requires this
+  s.add_development_dependency("rails") # devise requires this
   s.add_development_dependency("capybara")
   s.add_development_dependency("capybara-webkit")
   s.add_development_dependency "bundler", "~> 1.3"
