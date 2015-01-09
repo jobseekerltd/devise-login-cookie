@@ -40,8 +40,7 @@ module DeviseLoginCookie
     end
 
     def cookie_jar(cookies = {})
-      key = "aa" * 20
-      ActionDispatch::Cookies::CookieJar.new(key).tap do |jar|
+      base_jar.tap do |jar|
         cookies.each { |key, value| jar[key] = value }
       end
     end
@@ -57,10 +56,15 @@ module DeviseLoginCookie
     end
 
     def signed_cookie_value(id, created_at)
-      key = "aa" * 20
-      jar = ActionDispatch::Cookies::CookieJar.new(key)
+      jar = base_jar
       jar.signed[:test_token] = {value: [id, created_at]}
       jar[:test_token]
+    end
+
+    def base_jar
+      key = "aa" * 20
+      key_generator = ActiveSupport::KeyGenerator.new(key)
+      ActionDispatch::Cookies::CookieJar.new(key_generator, nil, false, {signed_cookie_salt: 'some value'})
     end
 
   end
