@@ -74,7 +74,7 @@ end
 def login(email = nil, password = nil)
   fill_in "Email", with: email || 'test@example.com'
   fill_in "Password", with: password || 'test'
-  click_on "Sign in"
+  click_on "Log in"
 end
 
 def cookies
